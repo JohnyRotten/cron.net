@@ -1,0 +1,14 @@
+C:\Users\mrale\RiderProjects\cron.net\cron.net\obj\Debug\cron.net.csprojResolveAssemblyReference.cache
+C:\Users\mrale\RiderProjects\cron.net\cron.net\bin\Debug\cron.net.exe
+C:\Users\mrale\RiderProjects\cron.net\cron.net\bin\Debug\cron.net.pdb
+C:\Users\mrale\RiderProjects\cron.net\cron.net\bin\Debug\mscorlib.dll
+C:\Users\mrale\RiderProjects\cron.net\cron.net\bin\Debug\nunit.framework.dll
+C:\Users\mrale\RiderProjects\cron.net\cron.net\bin\Debug\nunit.framework.xml
+C:\Users\mrale\RiderProjects\cron.net\cron.net\bin\Debug\ru\mscorlib.resources.dll
+C:\Users\mrale\RiderProjects\cron.net\cron.net\bin\Debug\normidna.nlp
+C:\Users\mrale\RiderProjects\cron.net\cron.net\bin\Debug\normnfc.nlp
+C:\Users\mrale\RiderProjects\cron.net\cron.net\bin\Debug\normnfd.nlp
+C:\Users\mrale\RiderProjects\cron.net\cron.net\bin\Debug\normnfkc.nlp
+C:\Users\mrale\RiderProjects\cron.net\cron.net\bin\Debug\normnfkd.nlp
+C:\Users\mrale\RiderProjects\cron.net\cron.net\obj\Debug\cron.net.exe
+C:\Users\mrale\RiderProjects\cron.net\cron.net\obj\Debug\cron.net.pdb
