@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Configuration.Install;
 using System.ServiceProcess;
 
 namespace cron.net
@@ -7,28 +6,21 @@ namespace cron.net
     [RunInstaller(true)]
     public class CronInstaller : ServiceInstaller
     {
-        private ServiceProcessInstaller _processInstaller;
-        private ServiceInstaller _serviceInstaller;
-
         public CronInstaller()
         {
-            ServiceName = nameof(CronService);
-            InitializeComponent();
-        }
+            var spi = new ServiceProcessInstaller();
+            var si = new ServiceInstaller();
 
-        private void InitializeComponent()
-        {
-            _processInstaller = new ServiceProcessInstaller();
-            _serviceInstaller = new ServiceInstaller();
+            spi.Account = ServiceAccount.LocalSystem;
+            spi.Username = null;
+            spi.Password = null;
 
-            _processInstaller.Account = ServiceAccount.LocalSystem;
+            si.DisplayName = CronService.DisplayName;
+            si.ServiceName = CronService.DisplayName;
+            si.StartType = ServiceStartMode.Automatic;
 
-            _serviceInstaller.ServiceName = nameof(CronService);
-            _serviceInstaller.StartType = ServiceStartMode.Automatic;
-
-            Installers.AddRange(new Installer[] {
-                _processInstaller,
-                _serviceInstaller});
+            Installers.Add(spi);
+            Installers.Add(si);
         }
     }
 }

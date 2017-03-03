@@ -11,6 +11,8 @@ namespace cron.net
     public sealed class CronService : ServiceBase
     {
 
+        public const string DisplayName = "CronService";
+
         private readonly CronWorker _worker;
 
         private string ServiceFolder => Path.Combine(
@@ -21,7 +23,7 @@ namespace cron.net
 
         public CronService()
         {
-            ServiceName = nameof(CronService);
+            ServiceName = DisplayName;
             if (!Directory.Exists(ServiceFolder)) Directory.CreateDirectory(ServiceFolder);
             InitEventLog();
             ILogger logger = new LoggerComposer(
