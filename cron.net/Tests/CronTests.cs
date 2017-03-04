@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using cron.net.Configs;
+using cron.net.Utils.Logging;
+using cron.net.Utils.Serialization;
 using NUnit.Framework;
 
 namespace cron.net.Tests
@@ -38,6 +42,16 @@ namespace cron.net.Tests
             {
                 Assert.IsTrue(pair.Value(new CronCommandLine(pair.Key)));
             }
+        }
+
+        [Test]
+        public void RunTest()
+        {
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments),
+                ".cron", "cron.xml");
+            var settings = new XmlSerializer<CronSettings>(path).Get();
+            var worker = new CronWorker(settings.SmtpSettings, new ConsoleLogger());
+            worker.Run();
         }
     }
 }

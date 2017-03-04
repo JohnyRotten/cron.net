@@ -39,6 +39,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -46,11 +47,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configs\CronSettings.cs" />
     <Compile Include="CronCommandLine.cs" />
-    <Compile Include="CronInstaller.cs" />
-    <Compile Include="CronService.cs" />
+    <Compile Include="CronService.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CronWorker.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="ProjectInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ProjectInstaller.Designer.cs">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\CronTests.cs" />
     <Compile Include="Utils\Logging\ConsoleLogger.cs" />
@@ -58,9 +67,24 @@
     <Compile Include="Utils\Logging\ILogger.cs" />
     <Compile Include="Utils\Logging\LoggerComposer.cs" />
     <Compile Include="Utils\Logging\StreamLogger.cs" />
+    <Compile Include="Utils\Mailing\EmailSender.cs" />
+    <Compile Include="Utils\Mailing\SmtpServerSettings.cs" />
+    <Compile Include="Utils\Serialization\ISerializer.cs" />
+    <Compile Include="Utils\Serialization\XmlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Utils\Mailing\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CronService.resx">
+      <DependentUpon>CronService.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProjectInstaller.resx">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

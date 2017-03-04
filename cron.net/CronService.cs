@@ -1,59 +1,63 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.ServiceProcess;
 using System.Threading;
+using cron.net.Configs;
 using cron.net.Utils.Logging;
+using cron.net.Utils.Serialization;
+using Timer = System.Timers.Timer;
 
 namespace cron.net
 {
     public sealed class CronService : ServiceBase
     {
-
-        public const string DisplayName = "CronService";
-
-        private readonly CronWorker _worker;
+        private readonly Timer _timer = new Timer(60000);
+        private readonly ILogger _logger;
 
         private string ServiceFolder => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments),
-            nameof(ServiceName));
+            ".cron");
 
         private string LogPath => Path.Combine(ServiceFolder, "cron.log");
+        private string SettingsPath => Path.Combine(ServiceFolder, "cron.xml");
+        private ISerializer<CronSettings> SettingsSerializer =>
+            new XmlSerializer<CronSettings>(SettingsPath);
 
         public CronService()
         {
-            ServiceName = DisplayName;
+            InitializeComponent();
             if (!Directory.Exists(ServiceFolder)) Directory.CreateDirectory(ServiceFolder);
-            InitEventLog();
-            ILogger logger = new LoggerComposer(
-                new EventLogger(EventLog),
+            _logger = new LoggerComposer(
+                //new EventLogger(EventLog, "CronService", EventLogType.Application),
                 new StreamLogger(() => new FileStream(LogPath, FileMode.Append))
             );
-            _worker = new CronWorker(logger);
-        }
-
-        private void InitEventLog()
-        {
-            EventLog.Source = ServiceName;
-            EventLog.Log = "Application";
-            ((ISupportInitialize)EventLog).BeginInit();
-            if (!EventLog.SourceExists(EventLog.Source))
-            {
-                EventLog.CreateEventSource(EventLog.Source, EventLog.Log);
-            }
-            ((ISupportInitialize)EventLog).EndInit();
+            var settings = SettingsSerializer.Get();
+            var worker = new CronWorker(settings.SmtpSettings, _logger);
+            _timer.AutoReset = true;
+            _timer.Elapsed += (sender, args) => worker.Run();
         }
 
         protected override void OnStart(string[] args)
         {
-            ThreadPool.QueueUserWorkItem(state => _worker.Start());
+            ThreadPool.QueueUserWorkItem(o =>
+            {
+                while (DateTime.Now.Second != 0)
+                {
+                }
+                _timer.Start();
+            });
+            _logger.Log("Cron started.");
         }
 
         protected override void OnStop()
         {
-            _worker.Stop();
+            _timer.Stop();
+            _logger.Log("Cron stopped.");
         }
 
+        private void InitializeComponent()
+        {
+            ServiceName = "CronService";
+        }
     }
 }
