@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using cron.net.Utils.Logging;
 using cron.net.Utils.Mailing;
@@ -17,6 +18,10 @@ namespace cron.net
             public const string MailTo = "MAILTO";
             public const string From = "cron@example.com";
             public const string Subject = "Cron notify";
+            public const string Shell = "SHELL";
+            public const string BashShell = "BASH";
+            public const string CmdShell = "CMD";
+            public const string PowerShell = "POWERSHELL";
         }
 
         private static string CronTabPath =>
@@ -80,13 +85,15 @@ namespace cron.net
                     _logger.Log($"Run command: {line.Command}");
                     var info = new ProcessStartInfo
                     {
-                        CreateNoWindow = true,
-                        FileName = "cmd",
-                        Arguments = $"/c {line.Command}",
+                        //CreateNoWindow = true,
+                        FileName = Shell,
+                        Arguments = PrepareCommand(line.Command),
                         UseShellExecute = false,
-                        WindowStyle = ProcessWindowStyle.Hidden,
+                        //WindowStyle = ProcessWindowStyle.Hidden,
                         RedirectStandardError = true,
-                        RedirectStandardOutput = true
+                        RedirectStandardOutput = true,
+                        StandardOutputEncoding = Encoding.Default,
+                        StandardErrorEncoding = Encoding.Default
                     };
                     var process = Process.Start(info);
                     if (_sender != null && process != null)
@@ -110,10 +117,28 @@ namespace cron.net
                 }
                 catch (Exception e)
                 {
-                    _logger.Log($"Process execption: {e.Message}");
+                    _logger.Log($"Process exception: {e.Message}");
                 }
             });
         }
+
+        private string PrepareCommand(string command)
+        {
+            var shell = Shell.ToUpper();
+            var result = command;
+            if (shell.Contains(Consts.BashShell))
+            {
+                result = $"-c \"{command}\"";
+            }
+            else if (shell.Contains(Consts.CmdShell) || shell.Contains(Consts.PowerShell))
+            {
+                result = $"/c {command}";
+            }
+            return result;//Encoding.Default.GetString(Encoding.Default.GetBytes(result));
+        }
+
+        public string Shell =>
+            _parameters.ContainsKey(Consts.Shell) ? _parameters[Consts.Shell] : "cmd";
 
     }
 }
